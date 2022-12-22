@@ -35,7 +35,7 @@ services:
     user: postgres
     volumes:
       - ./init_files/db/TP.sql:/docker-entrypoint-initdb.d/TP.sql
-      - './init_files/db/data:/var/lib/postgresql/data:Z'
+      - thingspanel-db:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     environment:
