@@ -120,10 +120,7 @@ services:
         soft: 20000
         hard: 40000
 volumes:
-  thingspanel-html: {}
-  thingspanel-postgres: {}
-  thingspanel-go: {}
-  modbus-plugin: {}
+  thingspanel-db: {}
 
 networks:
   extnetwork:
