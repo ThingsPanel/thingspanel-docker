@@ -57,40 +57,34 @@
 
 ## 挂载说明
 
-- **系统日志、图片等存放目录**
+- **后端配置文件、日志以及其他差分文件**
 
     ```bash
-    ./init_files/files
+    ./init_files/backend/
     ```
-
-
-- **后端配置文件**
-    > 可在此处更新和编译代码，编译后重启后端容器
+- **redis配置以及差分文件**
 
     ```bash
-    ./init_files/conf
+    ./init_files/redis/
     ```
 
 ## 查看容器运行日志
 
-```bash
+```bash showLineNumbers
 docker logs -f containerID
-或
-./init_files/files/log/
-```
 
 ## 注意事项
 
-- 端口：
+端口：
 
-    ```bash
-    > 8080（前端服务端口）
-    > 9998（tcp端口）
-    > 9999（API端口）
-    > 1883（mqtt端口）
-    > 5432（postogresql端口）
-    > 6379（redis端口）
-    ```
+```bash
+8080（前端服务端口）
+9999（后端API端口）
+1883（mqtt端口）
+5432（postogresql端口）
+6379（redis端口）
+1880（规则引擎端口）
+```
 - 登录
 
     ```
