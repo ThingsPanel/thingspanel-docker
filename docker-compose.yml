@@ -1,0 +1,135 @@
+version: "3.0"
+services:
+  frontend:
+    image: thingspanel/thingspanel-vue:v0.4.5
+    ports:
+      - "8080:8080"
+    expose:
+      - 8080
+    depends_on:
+      - backend
+      - rule-engine
+    hostname: frontend
+    networks:
+      extnetwork:
+        ipv4_address: 172.19.0.3
+    links:
+      - backend
+      - rule-engine
+    volumes:
+      - ./init_files/nginx.conf:/etc/nginx/nginx.conf
+
+  rule-engine:
+    image: thingspanel/rule-engine:v0.4.5
+    ports:
+      - "1880:1880"
+    expose:
+      - 1880
+    hostname: rule-engine
+    networks:
+      extnetwork:
+        ipv4_address: 172.19.0.7
+
+  database:
+    image: timescale/timescaledb:latest-pg12
+    user: postgres
+    volumes:
+      - ./init_files/db/TP.sql:/docker-entrypoint-initdb.d/TP.sql
+      - ./init_files/db/data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    environment:
+      - "TZ=Asia/Shanghai"
+      - "LC_ALL=C.UTF-8"
+      - "POSTGRES_DB=ThingsPanel"
+      - "POSTGRES_USER=postgres"
+      - "POSTGRES_PASSWORD=postgresThingsPanel2022"
+      - "POSTGRES_HOST_AUTH_METHOD=trust"
+    hostname: postgres
+    networks:
+      extnetwork:
+        ipv4_address: 172.19.0.4
+
+  gmqtt:
+    image: thingspanel/thingspanel-gmqtt:v0.4.5
+    ports:
+      - "1883:1883"
+      - "8083:8083"
+    hostname: gmqtt
+    networks:
+      extnetwork:
+        ipv4_address: 172.19.0.5
+
+  redis:
+    image: redis:6.2.7
+    command: redis-server --requirepass redis2022
+    volumes:
+      - ./init_files/redis/data:/data
+      - ./init_files/redis/conf/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./init_files/redis/logs:/logs
+    ports:
+      - "6379:6379"
+    hostname: redis
+    networks:
+      extnetwork:
+        ipv4_address: 172.19.0.6
+
+  backend:
+    image: thingspanel/thingspanel-go:v0.4.5
+    ports:
+      - "9999:9999"
+    hostname: backend
+    networks:
+      extnetwork:
+        ipv4_address: 172.19.0.2
+    depends_on:
+      - gmqtt
+      - database
+      - redis
+    links:
+      - database
+      - gmqtt
+      - redis
+    volumes:
+      - ./init_files/backend/files:/app/files
+      - ./init_files/backend/conf:/app/conf
+    restart: on-failure
+    ulimits:
+      nproc: 524288
+      nofile:
+        soft: 20000
+        hard: 40000
+  modbus-plugin:
+    image: thingspanel/modbus-protocol-plugin:v0.4.5
+    ports:
+      - "502:502"
+      - "503:503"
+    hostname: modbus-plugin
+    networks:
+      extnetwork:
+        ipv4_address: 172.19.0.8
+    depends_on:
+      - backend
+    links:
+      - backend
+      - gmqtt
+    restart: on-failure
+    ulimits:
+      nproc: 524288
+      nofile:
+        soft: 20000
+        hard: 40000
+volumes:
+  thingspanel-html: {}
+  thingspanel-postgres: {}
+  thingspanel-go: {}
+  modbus-plugin: {}
+
+networks:
+  extnetwork:
+    ipam:
+      config:
+        - subnet: 172.19.0.0/16
+
+
+
