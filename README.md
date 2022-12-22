@@ -38,7 +38,7 @@
 
     ```bash
     # 拉取docker配置
-    git clone https://github.com/ThingsPanel/thingsPanel-go-docker.git
+    git clone https://github.com/ThingsPanel/thingspanel-docker.git
     cd thingsPanel-go-docker
     ```
 
