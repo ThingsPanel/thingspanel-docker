@@ -1053,12 +1053,6 @@ COMMENT ON COLUMN public.device.sub_device_addr IS '子设备地址';
 INSERT INTO public.tp_dict
 (id, dict_code, dict_value, "describe", created_at)
 VALUES('341efc2c-7704-7795-a53c-ecec34534832', 'GATEWAY_PROTOCOL', 'MQTT', 'MQTT协议', 1665998514);
-INSERT INTO public.tp_dict
-(id, dict_code, dict_value, "describe", created_at)
-VALUES('0283d426-7397-975c-7ab5-80f5f653f097', 'GATEWAY_PROTOCOL', 'MODBUS_TCP', 'MODBUS_TCP协议', 1665998534);
-INSERT INTO public.tp_dict
-(id, dict_code, dict_value, "describe", created_at)
-VALUES('8f40f32a-d048-51ca-ceeb-898f5ac11df5', 'GATEWAY_PROTOCOL', 'MODBUS_RTU', 'MODBUS_RTU协议', 1665998545);
 
 CREATE TABLE public.tp_script (
 	id varchar(36) NOT NULL,
