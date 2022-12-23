@@ -928,9 +928,9 @@ VALUES('83e18dcd-c6c8-eca2-2859-11dd6c6e7c6d', '', NULL, '/list', 'BusinessList'
 INSERT INTO public.tp_function
 (id, function_name, menu_id, "path", "name", component, title, icon, "type", function_code, parent_id, sort)
 VALUES('1bc93bad-41d3-ca37-638b-f79a29c1388b', '', NULL, '/data/index', 'Datas', '/pages/datas/DataIndex.vue', 'COMMON.DATAS', 'menu-icon flaticon2-list', '1', '', '0', 980);
-INSERT INTO public.tp_function
-(id, function_name, menu_id, "path", "name", component, title, icon, "type", function_code, parent_id, sort)
-VALUES('2a7d5d94-62b5-c1c3-240b-cfeed8d92ec1', '', NULL, '/test123', 'Test123', '/pages/test123/index.vue', '设备地图', 'flaticon2-gear', '1', '', '0', 989);
+-- INSERT INTO public.tp_function
+-- (id, function_name, menu_id, "path", "name", component, title, icon, "type", function_code, parent_id, sort)
+-- VALUES('2a7d5d94-62b5-c1c3-240b-cfeed8d92ec1', '', NULL, '/test123', 'Test123', '/pages/test123/index.vue', '设备地图', 'flaticon2-gear', '1', '', '0', 989);
 INSERT INTO public.tp_function
 (id, function_name, menu_id, "path", "name", component, title, icon, "type", function_code, parent_id, sort)
 VALUES('6455296b-bce4-bd6a-8047-3788ff95f107', '', NULL, '', 'DelDevicePlugin', '', '删除设备插件', '', '3', 'plugin:device:del', 'ec7a22ed-919d-7959-6737-145198f6172f', 0);
