@@ -1202,10 +1202,10 @@ ALTER TABLE public.tp_protocol_plugin ADD CONSTRAINT tp_protocol_plugin_un UNIQU
 
 INSERT INTO public.tp_protocol_plugin
 (id, "name", protocol_type, access_address, http_address, sub_topic_prefix, created_at, description, device_type)
-VALUES('c8a13166-e010-24e4-0565-e87feea162bb', 'MODBUS_TCP协议', 'MODBUS_TCP', '服务ip:502', '127.0.0.1:503', 'plugin/modbus/', 1668759820, '请参考文档对接设备,docker部署将http服务器地址的ip改为172.19.0.8', '2');
+VALUES('c8a13166-e010-24e4-0565-e87feea162bb', 'MODBUS_TCP协议', 'MODBUS_TCP', '服务ip:502', '127.0.0.1:503', 'plugin/modbus/', 1668759820, '请参考文档对接设备,(应用管理->接入协议)docker部署将http服务器地址的ip改为172.19.0.8', '2');
 INSERT INTO public.tp_protocol_plugin
 (id, "name", protocol_type, access_address, http_address, sub_topic_prefix, created_at, description, device_type)
-VALUES('2a95000c-9c29-7aae-58b0-5202daf1546a', 'MODBUS_RTU协议', 'MODBUS_RTU', '服务ip:502', '127.0.0.1:503', 'plugin/modbus/', 1668759841, '请参考文档对接设备,docker部署将http服务器地址的ip改为172.19.0.8', '2');
+VALUES('2a95000c-9c29-7aae-58b0-5202daf1546a', 'MODBUS_RTU协议', 'MODBUS_RTU', '服务ip:502', '127.0.0.1:503', 'plugin/modbus/', 1668759841, '请参考文档对接设备,(应用管理->接入协议)docker部署将http服务器地址的ip改为172.19.0.8', '2');
 
 
 
