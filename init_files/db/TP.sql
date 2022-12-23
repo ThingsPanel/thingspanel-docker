@@ -770,9 +770,9 @@ SELECT create_hypertable('ts_kv', 'ts',chunk_time_interval => 86400000000);
 INSERT INTO "users" ("id", "created_at", "updated_at", "enabled", "additional_info", "authority", "customer_id", "email", "password", "name", "first_name", "last_name", "search_text", "email_verified_at", "remember_token", "mobile", "remark", "is_admin", "business_id", "wx_openid", "wx_unionid") VALUES
 ('9212e9fb-a89c-4e35-9509-0a15df64f45a',	1606099326,	1623490224,	't',	NULL,	NULL,	NULL,	'super@super.cn',	'$2a$04$aGFaew.rkRmOUiOZ/3ZncO/HN1BuJc8Dcm1MNuU3HhbUVUgKIx7jG',	'Admin',	NULL,	NULL,	NULL,	0,	NULL,	'18618000000',	NULL,	0,	'',	'',	'');
 
--- INSERT INTO logo
--- (id, system_name, theme, logo_one, logo_two, logo_three, custom_id, remark)
--- VALUES('1d625cec-bf5b-2ad1-b135-a23b5fad05bf', 'ThingsPanel', 'blue', './files/logo/logo-one.svg', './files/logo/logo-two.gif', './files/logo/logo-three.png', '', '');
+INSERT INTO logo
+(id, system_name, theme, logo_one, logo_two, logo_three, custom_id, remark)
+VALUES('1d625cec-bf5b-2ad1-b135-a23b5fad05bf', 'ThingsPanel', 'blue', './files/logo/logo-one.svg', './files/logo/logo-two.gif', './files/logo/logo-three.png', '', '');
 INSERT INTO tp_menu (id,menu_name,parent_id,remark) VALUES
 	 ('1','homepage','0',NULL),
 	 ('2','buisness','0',NULL),
