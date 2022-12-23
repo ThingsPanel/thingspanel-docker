@@ -91,8 +91,8 @@ services:
       - gmqtt
       - redis
     volumes:
-      - ./init_files/backend/files:/app/files
-      - ./init_files/backend/conf:/app/conf
+      - ./init_files/backend/files:/go/src/app/files
+      - ./init_files/backend/conf:/go/src/app/conf
     restart: on-failure
     ulimits:
       nproc: 524288
