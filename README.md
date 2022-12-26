@@ -39,7 +39,7 @@
     ```bash
     # 拉取docker配置
     git clone https://github.com/ThingsPanel/thingspanel-docker.git
-    cd thingsPanel-go-docker
+    cd thingspanel-docker
     ```
 
 - **运行项目**
@@ -84,6 +84,7 @@ docker logs -f containerID
 5432（postogresql端口）
 6379（redis端口）
 1880（规则引擎端口）
+8083（mqtt用户注册接口）
 ```
 - 登录
 
@@ -92,7 +93,7 @@ docker logs -f containerID
     输入账户:super@super.cn
     输入密码:123456
     ```
-- 设备接入
+- 各种协议类型设备的接入
     http://thingspanel.io/docs/equipment-access/mqtt
 
 
@@ -102,4 +103,4 @@ docker logs -f containerID
 
 [论坛](http://forum.thingspanel.cn/)
 
-qq群：260150504
+qq群：260150504 
