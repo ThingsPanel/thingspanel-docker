@@ -1269,4 +1269,3 @@ VALUES('25074e80-b7ca-99a3-e1f7-2fec7ec31b24', 'GATEWAY_PROTOCOL', 'tcp', 'å®˜æ–
 
 CREATE INDEX operation_log_created_at_idx ON public.operation_log (created_at DESC);
 CREATE INDEX ts_kv_entity_id_idx ON public.ts_kv (entity_id,ts DESC);
-
