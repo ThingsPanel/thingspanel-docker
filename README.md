@@ -5,8 +5,13 @@
 - **windows电脑安装 [Docker Desktop](https://www.docker.com/products/docker-desktop)**
 - **git**
 
-## linux环境准备
 
+## linux环境准备
+* 需要先安装好Docker（[安装docker社区版](https://docs.docker.com/engine/installation/)）
+* DockerCompose（[安装Docker Compose](https://docs.docker.com/compose/install/)）
+* Git
+
+以官网安装文档为准，以下可供部分linux系统参考
 - **安装docker**
 
     ```bash
@@ -33,7 +38,7 @@
     ```bash
     dnf install git -y
     ```
-
+## 安装ThingsPanel
 - **使用拉取项目**
 
     ```bash
@@ -45,7 +50,7 @@
 - **运行项目**
 
     > 在`thingsPanel-go-docker`目录下(win需要打开`cmd` 窗口)
-
+    以下三个命令根据情况选一个执行
     ```bash
     # 以日志显示前台方式启动项目(默认账户和密码 super@super.cn 123456)(默认端口8080)
     docker-compose -f docker-compose.yml up
@@ -98,9 +103,6 @@ docker logs -f containerID
 
 
 ## 联系我们
-
-[wiki](http://wiki.thingspanel.cn/index.php?title=%E9%A6%96%E9%A1%B5)
-
-[论坛](http://forum.thingspanel.cn/)
-
-qq群：260150504 
+安装过程碰到任何问题请联系我们
+qq群1：260150504 
+qq群2：371794256
