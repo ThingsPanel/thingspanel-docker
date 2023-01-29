@@ -1209,7 +1209,7 @@ VALUES('2a95000c-9c29-7aae-58b0-5202daf1546a', 'MODBUS_RTU协议', 'MODBUS_RTU',
 
 
 
--- 0.4.1
+-- 0.4.5
 ALTER TABLE public.tp_dict ADD CONSTRAINT tp_dict_un UNIQUE (dict_code,dict_value);
 ALTER TABLE public.ts_kv_latest ADD CONSTRAINT ts_kv_latest_fk FOREIGN KEY (entity_id) REFERENCES public.device(id) ON DELETE CASCADE;
 ALTER TABLE public.conditions_log ADD CONSTRAINT conditions_log_fk FOREIGN KEY (device_id) REFERENCES public.device(id);
@@ -1270,3 +1270,21 @@ VALUES('25074e80-b7ca-99a3-e1f7-2fec7ec31b24', 'GATEWAY_PROTOCOL', 'tcp', '官�
 CREATE INDEX operation_log_created_at_idx ON public.operation_log (created_at DESC);
 CREATE INDEX ts_kv_entity_id_idx ON public.ts_kv (entity_id,ts DESC);
 
+--v0.4.6
+ALTER TABLE public.logo DROP COLUMN custom_id;
+ALTER TABLE public.logo ADD home_background varchar(255) NULL;
+COMMENT ON COLUMN public.logo.home_background IS '首页背景';
+
+ALTER TABLE public.tp_protocol_plugin ADD additional_info varchar(1000) NULL;
+COMMENT ON COLUMN public.tp_protocol_plugin.additional_info IS '附加信息';
+
+ALTER TABLE public.warning_log DROP CONSTRAINT warning_log_fk;
+ALTER TABLE public.warning_log ADD CONSTRAINT warning_log_fk FOREIGN KEY (data_id) REFERENCES public.device(id) ON DELETE CASCADE ON UPDATE CASCADE;
+
+INSERT INTO tp_dict
+(id, dict_code, dict_value, "describe", created_at)
+VALUES('9aa72824-e26b-2723-426a-ec8bcff091e9', 'GATEWAY_PROTOCOL', 'WVP_01', 'GB28181', 1673933847);
+
+INSERT INTO tp_protocol_plugin
+(id, "name", protocol_type, access_address, http_address, sub_topic_prefix, created_at, description, device_type, additional_info)
+VALUES('1cd08053-f08a-8bda-2c22-c0b2582ce0b4', 'GB28181', 'WVP_01', '127.0.0.1:18080', 'http://127.0.0.1:18080||admin||admin', '-', 1673933847, '使用GB28181协议需要自行搭建wvp服务，然后按照http服务器地址样例修改（地址供平台后端调用）；协议类型必须以WVP_开头', '2', '[{"key":"域名称","value":""},{"key":"连接地址","value":""},{"key":"端口","value":""},{"key":"密码","value":""}]');
