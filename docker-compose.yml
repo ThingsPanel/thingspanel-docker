@@ -1,7 +1,7 @@
 version: "3.0"
 services:
   frontend:
-    image: thingspanel/thingspanel-vue:v0.4.5
+    image: thingspanel/thingspanel-vue:v0.4.6
     ports:
       - "8080:8080"
     expose:
@@ -75,7 +75,7 @@ services:
         ipv4_address: 172.19.0.6
 
   backend:
-    image: thingspanel/thingspanel-go:v0.4.5
+    image: thingspanel/thingspanel-go:v0.4.6
     ports:
       - "9999:9999"
     hostname: backend
@@ -100,7 +100,7 @@ services:
         soft: 20000
         hard: 40000
   modbus-plugin:
-    image: thingspanel/modbus-protocol-plugin:v0.4.5
+    image: thingspanel/modbus-protocol-plugin:v0.4.6
     ports:
       - "502:502"
       - "503:503"
