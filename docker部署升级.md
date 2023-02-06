@@ -14,7 +14,7 @@
 2. 执行下面命令将文件传入数据库容器中。
 
 ```bash
-docker cp /home/tp/Ver.sql timescale:latest-pg12:/var
+docker cp /home/tp/Ver.sql timescale:latest-pg12:/var/tmp
 ```
 
 命令说明：docker cp 宿主机文件/路径 容器名或容器id：容器内路径。
@@ -25,7 +25,7 @@ docker exec -it ContainerID /bin/bash
 
 ### 执行sql脚本
 
-psql -d ThingsPanel -U postgres -f /var/1.sql
+psql -d ThingsPanel -U postgres -f /var/tmp/Ver.sql
 
 ## 第二步：应用升级（前端thingspanel-vue、后端thingspanel-go）
 
