@@ -1,7 +1,7 @@
-version: "3.0"
+version: "3.9"
 services:
   frontend:
-    image: thingspanel/thingspanel-vue:v0.4.7
+    image: thingspanel/thingspanel-vue:v0.4.8
     ports:
       - "8080:8080"
     expose:
@@ -17,7 +17,7 @@ services:
       - backend
       - rule-engine
     volumes:
-      - ./init_files/nginx.conf:/etc/nginx/nginx.conf
+      - nginx:/etc/nginx
 
   rule-engine:
     image: thingspanel/rule-engine:v0.4.5
@@ -32,10 +32,9 @@ services:
 
   database:
     image: timescale/timescaledb:latest-pg12
-    user: postgres
+    privileged: true
     volumes:
-      - ./init_files/db/TP.sql:/docker-entrypoint-initdb.d/TP.sql
-      - thingspanel-db:/var/lib/postgresql/data
+      - ./data/timescaleDB:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     environment:
@@ -51,7 +50,10 @@ services:
         ipv4_address: 172.19.0.4
 
   gmqtt:
-    image: thingspanel/thingspanel-gmqtt:v0.4.7
+    image: thingspanel/thingspanel-gmqtt:v0.4.8
+    volumes:
+      - gmqtt-passwork:/gmqttd
+      - gmqtt:/etc/gmqtt
     ports:
       - "1883:1883"
       - "8083:8083"
@@ -64,9 +66,9 @@ services:
     image: redis:6.2.7
     command: redis-server --requirepass redis2022
     volumes:
-      - ./init_files/redis/data:/data
-      - ./init_files/redis/conf/redis.conf:/usr/local/etc/redis/redis.conf
-      - ./init_files/redis/logs:/logs
+      - ./data/redis/data:/data
+      - ./data/redis/conf/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./data/redis/logs:/logs
     ports:
       - "6379:6379"
     hostname: redis
@@ -75,7 +77,7 @@ services:
         ipv4_address: 172.19.0.6
 
   backend:
-    image: thingspanel/thingspanel-go:v0.4.7
+    image: thingspanel/thingspanel-go:v0.4.8
     ports:
       - "9999:9999"
     hostname: backend
@@ -91,8 +93,8 @@ services:
       - gmqtt
       - redis
     volumes:
-      - ./init_files/backend/files:/go/src/app/files
-      - ./init_files/backend/conf:/go/src/app/conf
+      - go:/go/src/app/files
+      - go:/go/src/app/conf
     restart: on-failure
     ulimits:
       nproc: 524288
@@ -100,7 +102,7 @@ services:
         soft: 20000
         hard: 40000
   modbus-plugin:
-    image: thingspanel/modbus-protocol-plugin:v0.4.6
+    image: thingspanel/modbus-protocol-plugin:v0.4.8
     ports:
       - "502:502"
       - "503:503"
@@ -120,7 +122,10 @@ services:
         soft: 20000
         hard: 40000
 volumes:
-  thingspanel-db: {}
+  go:
+  gmqtt:
+  gmqtt-passwork:
+  nginx:
 
 networks:
   extnetwork:
