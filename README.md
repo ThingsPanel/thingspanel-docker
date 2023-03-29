@@ -62,16 +62,7 @@
 
 ## 挂载说明
 
-- **后端配置文件、日志以及其他差分文件**
-
-    ```bash
-    ./init_files/backend/
-    ```
-- **redis配置以及差分文件**
-
-    ```bash
-    ./init_files/redis/
-    ```
+- docker volume ls可查看数据卷
 
 ## 查看容器运行日志
 
