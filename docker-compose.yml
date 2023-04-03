@@ -52,8 +52,7 @@ services:
   gmqtt:
     image: thingspanel/thingspanel-gmqtt:v0.4.8
     volumes:
-      - gmqtt-passwork:/gmqttd
-      - gmqtt:/etc/gmqtt
+      - gmqtt:/gmqttd
     ports:
       - "1883:1883"
       - "8083:8083"
@@ -124,7 +123,6 @@ services:
 volumes:
   go:
   gmqtt:
-  gmqtt-passwork:
   nginx:
 
 networks:
