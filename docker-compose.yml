@@ -35,7 +35,7 @@ services:
     privileged: true
     volumes:
       - ./data/timescaleDB:/var/lib/postgresql/data
-    ports:
+    ports: # 如不需要从外部访问可删除端口映射
       - "5432:5432"
     environment:
       - "TZ=Asia/Shanghai"
@@ -68,7 +68,7 @@ services:
       - ./data/redis/data:/data
       - ./data/redis/conf/redis.conf:/usr/local/etc/redis/redis.conf
       - ./data/redis/logs:/logs
-    ports:
+    ports: # 如不需要从外部访问可删除端口映射
       - "6379:6379"
     hostname: redis
     networks:
@@ -77,7 +77,7 @@ services:
 
   backend:
     image: thingspanel/thingspanel-go:v0.4.8
-    ports:
+    ports: # 如不需要从外部访问可删除端口映射
       - "9999:9999"
     hostname: backend
     networks:
