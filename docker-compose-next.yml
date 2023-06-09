@@ -110,7 +110,7 @@ services:
         soft: 20000
         hard: 40000
   modbus-plugin:
-    image: thingspanel/modbus-protocol-plugin:v0.4.8
+    image: thingspanel/modbus-protocol-plugin:v0.5.0
     ports:
       - "502:502"
       - "503:503"
