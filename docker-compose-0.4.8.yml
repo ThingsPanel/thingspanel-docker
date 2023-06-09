@@ -1,13 +1,11 @@
 version: "3.9"
 services:
   frontend:
-    image: thingspanel/thingspanel-vue:v0.5.0
+    image: thingspanel/thingspanel-vue:v0.4.8
     ports:
       - "8080:8080"
     expose:
       - 8080
-    environment:
-      - "BANKEND_HOST=172.19.0.2:9999" #后端接口代理地址
     depends_on:
       - backend
       - rule-engine
@@ -52,7 +50,7 @@ services:
         ipv4_address: 172.19.0.4
 
   gmqtt:
-    image: thingspanel/thingspanel-gmqtt:v0.5.0
+    image: thingspanel/thingspanel-gmqtt:v0.4.8
     volumes:
       - gmqtt:/gmqttd
     ports:
@@ -78,16 +76,9 @@ services:
         ipv4_address: 172.19.0.6
 
   backend:
-    image: thingspanel/thingspanel-go:v0.5.0
+    image: thingspanel/thingspanel-go:v0.4.8
     ports: # 如不需要从外部访问可删除端口映射
       - "9999:9999"
-    environment:
-      - "TP_PG_IP=172.19.0.4"
-      - "TP_PG_PORT=5432"
-      - "TP_MQTT_HOST=172.19.0.5:1883"
-      - "MQTT_HTTP_HOST=172.19.0.5:8083"
-      - "TP_REDIS_HOST=172.19.0.6:6379"
-      - "PLUGIN_HTTP_HOST=172.19.0.8:503"
     hostname: backend
     networks:
       extnetwork:
@@ -110,7 +101,7 @@ services:
         soft: 20000
         hard: 40000
   modbus-plugin:
-    image: thingspanel/modbus-protocol-plugin:v0.5.0
+    image: thingspanel/modbus-protocol-plugin:v0.4.8
     ports:
       - "502:502"
       - "503:503"
