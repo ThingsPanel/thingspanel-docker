@@ -8,6 +8,7 @@ services:
       - 8080
     environment:
       - "BANKEND_HOST=172.19.0.2:9999" #后端接口代理地址
+      - "TZ=Asia/Shanghai"
     depends_on:
       - backend
       - rule-engine
@@ -25,6 +26,8 @@ services:
     image: thingspanel/rule-engine:v0.4.5
     ports:
       - "1880:1880"
+    environment:
+      - "TZ=Asia/Shanghai"
     expose:
       - 1880
     hostname: rule-engine
@@ -58,6 +61,8 @@ services:
     ports:
       - "1883:1883"
       - "8083:8083"
+    environment:
+      - "TZ=Asia/Shanghai"
     hostname: gmqtt
     networks:
       extnetwork:
@@ -72,6 +77,8 @@ services:
       - ./data/redis/logs:/logs
     ports: # 如不需要从外部访问可删除端口映射
       - "6379:6379"
+    environment:
+      - "TZ=Asia/Shanghai"
     hostname: redis
     networks:
       extnetwork:
@@ -82,6 +89,7 @@ services:
     ports: # 如不需要从外部访问可删除端口映射
       - "9999:9999"
     environment:
+      - "TZ=Asia/Shanghai"
       - "TP_PG_IP=172.19.0.4"
       - "TP_PG_PORT=5432"
       - "TP_MQTT_HOST=172.19.0.5:1883"
@@ -114,6 +122,8 @@ services:
     ports:
       - "502:502"
       - "503:503"
+    environment:
+      - "TZ=Asia/Shanghai"
     hostname: modbus-plugin
     networks:
       extnetwork:
