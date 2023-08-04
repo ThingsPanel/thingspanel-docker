@@ -55,7 +55,7 @@ services:
         ipv4_address: 172.19.0.4
 
   gmqtt:
-    image: thingspanel/thingspanel-gmqtt:v0.5.0
+    image: thingspanel/thingspanel-gmqtt:v0.5.2
     volumes:
       - gmqtt:/gmqttd
     ports:
