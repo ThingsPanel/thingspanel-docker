@@ -1,4 +1,9 @@
 # ThingsPanel版本升级（docker部署版本）
+## 部分容器升级（前端、后端、mqtt服务或协议插件）
+1. 停止目标容器，删除目标容器
+2. 删除目标容器的卷
+3. 更新thingspanel-docker源码:git pull
+4. 执行：docker-compose -f docker-compose.yml up
 
 ## 备份
 
