@@ -11,7 +11,7 @@ thingspanel-gmqtt:gmqtt
 thingspanel-go:go
 ```
 1. thingspanel-docker目录下更新thingspanel-docker源码:git pull
-2. 停止目标容器:docker stop ContainerID，删除目标容器:docker rm ContainerID
+2. 停止目标容器:docker stop ContainerID，删除目标容器:docker rm ContainerID，删除目标镜像:docker rmi ImageID
 3. 删除目标容器的卷：
    1. 清理没有使用的卷：docker volume prune
    2. 查验卷有没有被清理：docker volume ls
@@ -62,10 +62,20 @@ docker stop ContainerID
 docker-compose -f docker-compose.yml up
 ```
 
-## gmqtt镜像升级(待更新)
+### gmqtt镜像升级(待更新)
 
-## 规则引擎镜像升级（待更新）
+### 规则引擎镜像升级（待更新）
 
+## 修改卷里的配置
+1. 找到对应的卷名
+```
+docker volume ls
+```
+2. 查看卷在宿主机的路径,
+```
+docker volume inspect
+```
+3.
 ## 联系我们
 
 如升级有疑问请加群咨询
