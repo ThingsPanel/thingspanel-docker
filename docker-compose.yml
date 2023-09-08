@@ -1,24 +1,20 @@
 version: "3.9"
 services:
-  frontend:
-    image: thingspanel/thingspanel-vue:v0.5.2.1
+  frontend: # 前端
+    image: thingspanel/thingspanel-vue:v0.5.3
     ports:
       - "8080:8080"
     expose:
       - 8080
     environment:
-      - "BANKEND_HOST=172.19.0.2:9999" #后端接口代理地址
+      - "BACKEND_HOST=172.19.0.2:9999" #后端接口代理地址
       - "TZ=Asia/Shanghai"
-    depends_on:
+    depends_on: # 隐式地创建了一个依赖关系
       - backend
       - rule-engine
-    hostname: frontend
     networks:
       extnetwork:
         ipv4_address: 172.19.0.3
-    links:
-      - backend
-      - rule-engine
     volumes:
       - nginx:/etc/nginx
 
@@ -30,15 +26,14 @@ services:
       - "TZ=Asia/Shanghai"
     expose:
       - 1880
-    hostname: rule-engine
     networks:
       extnetwork:
         ipv4_address: 172.19.0.7
 
-  database:
+  postgres:
     image: timescale/timescaledb:latest-pg12
     privileged: true
-    volumes:
+    volumes: # 注意！如果在win系统上运行，可能会有权限问题，可更改为卷映射(去掉文件末尾的卷注释，将下方./data/timescaleDB改为卷timescaleDB即可)
       - ./data/timescaleDB:/var/lib/postgresql/data
     ports: # 如不需要从外部访问可删除端口映射
       - "5432:5432"
@@ -47,15 +42,19 @@ services:
       - "LC_ALL=C.UTF-8"
       - "POSTGRES_DB=ThingsPanel"
       - "POSTGRES_USER=postgres"
-      - "POSTGRES_PASSWORD=postgresThingsPanel2022"
+      - "POSTGRES_PASSWORD=ThingsPanel2023"
       - "POSTGRES_HOST_AUTH_METHOD=trust"
-    hostname: postgres
     networks:
       extnetwork:
         ipv4_address: 172.19.0.4
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   gmqtt:
-    image: thingspanel/thingspanel-gmqtt:v0.5.2
+    image: thingspanel/thingspanel-gmqtt:v0.5.3
     volumes:
       - gmqtt:/gmqttd
     ports:
@@ -79,13 +78,12 @@ services:
       - "6379:6379"
     environment:
       - "TZ=Asia/Shanghai"
-    hostname: redis
     networks:
       extnetwork:
         ipv4_address: 172.19.0.6
 
   backend:
-    image: thingspanel/thingspanel-go:v0.5.2
+    image: thingspanel/thingspanel-go:v0.5.3
     ports: # 如不需要从外部访问可删除端口映射
       - "9999:9999"
     environment:
@@ -96,17 +94,12 @@ services:
       - "MQTT_HTTP_HOST=172.19.0.5:8083"
       - "TP_REDIS_HOST=172.19.0.6:6379"
       - "PLUGIN_HTTP_HOST=172.19.0.8:503"
-    hostname: backend
     networks:
       extnetwork:
         ipv4_address: 172.19.0.2
     depends_on:
       - gmqtt
-      - database
-      - redis
-    links:
-      - database
-      - gmqtt
+      - postgres
       - redis
     volumes:
       - go:/go/src/app/files
@@ -118,7 +111,7 @@ services:
         soft: 20000
         hard: 40000
   modbus-plugin:
-    image: thingspanel/modbus-protocol-plugin:v0.5.0
+    image: thingspanel/modbus-protocol-plugin:v0.5.3
     ports:
       - "502:502"
       - "503:503"
@@ -129,8 +122,6 @@ services:
       extnetwork:
         ipv4_address: 172.19.0.8
     depends_on:
-      - backend
-    links:
       - backend
       - gmqtt
     restart: on-failure
@@ -143,6 +134,7 @@ volumes:
   go:
   gmqtt:
   nginx:
+  # timescaleDB:
 
 networks:
   extnetwork:
