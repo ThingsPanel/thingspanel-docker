@@ -90,8 +90,8 @@ services:
       - "TZ=Asia/Shanghai"
       - "TP_PG_IP=172.19.0.4"
       - "TP_PG_PORT=5432"
-      - "TP_MQTT_HOST=172.19.0.5:1883"
-      - "MQTT_HTTP_HOST=172.19.0.5:8083"
+      - GOTP_MQTT_BROKER=172.19.0.5:1883
+      - GOTP_API_HTTP_HOST=172.19.0.5:8083
       - "TP_REDIS_HOST=172.19.0.6:6379"
       - "PLUGIN_HTTP_HOST=172.19.0.8:503"
     networks:
