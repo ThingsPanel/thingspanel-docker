@@ -1,7 +1,7 @@
 version: "3.9"
 services:
   frontend: # 前端
-    image: thingspanel/thingspanel-vue:v0.5.4
+    image: thingspanel/thingspanel-vue:v0.5.4.1
     ports:
       - "8080:8080"
     expose:
@@ -94,7 +94,7 @@ services:
       - "GOTP_DB_REDIS_CONN=172.19.0.6:6379"
       - "GOTP_API_HTTP_HOST=172.19.0.5:8083"
       - "GOTP_DB_PSQL_DBTYPE=timescaledb"
-      - "GOTP_MQTT_SERVER=vernemq"
+      - "GOTP_MQTT_SERVER=gmqtt"
     networks:
       extnetwork:
         ipv4_address: 172.19.0.2
