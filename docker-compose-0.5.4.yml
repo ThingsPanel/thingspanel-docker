@@ -1,7 +1,7 @@
 version: "3.9"
 services:
   frontend: # 前端
-    image: thingspanel/thingspanel-vue:v0.5.4
+    image: thingspanel/thingspanel-vue:v0.5.3
     ports:
       - "8080:8080"
     expose:
@@ -83,18 +83,17 @@ services:
         ipv4_address: 172.19.0.6
 
   backend:
-    image: thingspanel/thingspanel-go:v0.5.4.1
+    image: thingspanel/thingspanel-go:v0.5.3
     ports: # 如不需要从外部访问可删除端口映射
       - "9999:9999"
     environment:
       - "TZ=Asia/Shanghai"
-      - "GOTP_DB_PSQL_PSQLADDR=172.19.0.4"
-      - "GOTP_DB_PSQL_PSQLPORT=5432"
-      - "GOTP_MQTT_BROKER=172.19.0.5:1883"
-      - "GOTP_DB_REDIS_CONN=172.19.0.6:6379"
-      - "GOTP_API_HTTP_HOST=172.19.0.5:8083"
-      - "GOTP_DB_PSQL_DBTYPE=timescaledb"
-      - "GOTP_MQTT_SERVER=vernemq"
+      - "TP_PG_IP=172.19.0.4"
+      - "TP_PG_PORT=5432"
+      - GOTP_MQTT_BROKER=172.19.0.5:1883
+      - GOTP_API_HTTP_HOST=172.19.0.5:8083
+      - "TP_REDIS_HOST=172.19.0.6:6379"
+      - "PLUGIN_HTTP_HOST=172.19.0.8:503"
     networks:
       extnetwork:
         ipv4_address: 172.19.0.2
