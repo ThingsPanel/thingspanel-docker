@@ -38,7 +38,7 @@ services:
     volumes: # 注意！如果在win系统上运行，可能会有权限问题，可更改为卷映射(去掉文件末尾的卷注释，将下方./data/timescaleDB改为卷timescaleDB即可)
       - ./data/timescaleDB:/var/lib/postgresql/data
     ports: # 如不需要从外部访问可删除端口映射
-      - "5432:5432"
+      - "5555:5432"
     environment:
       - "TZ=Asia/Shanghai"
       - "LC_ALL=C.UTF-8"
