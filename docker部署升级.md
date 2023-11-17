@@ -15,16 +15,17 @@ thingspanel-go:go
 3. 删除目标容器的卷：
    1. 清理没有使用的卷：docker volume prune
    2. 查验卷有没有被清理：docker volume ls
-   3. 如果没有便删除卷：docker volume delete 卷名
-4. 执行：docker-compose -f docker-compose.yml up
+   3. 如果没有便删除卷：docker volume delete 卷名（thingspanel-docker_gmqtt，thingspanel-docker_go，thingspanel-docker_nginx）
+4. 执行：docker-compose -f docker-compose.yml up  
+   注意如果镜像和升级的目标镜像相同，需要删除服务器上的镜像重新拉取
 ## 全部升级
 ### 第一步：数据库升级
 
 #### 增量脚本拷贝
 
-步骤：
+步骤：（也可以将增加sql直接通过数据库工具执行）
 
-1. 查看ThingsPanel-Go仓库TP.sql文件末尾，找到升级版本的增量sql，单独做成文件Ver.sql传到数据库容器中。
+1. 查看ThingsPanel-Go仓库TP.sql文件末尾，找到升级版本的增量sql（最好工具比对一下），单独做成文件Ver.sql传到数据库容器中。
 2. 执行下面命令将文件传入数据库容器中。
 
 ```bash
@@ -66,7 +67,7 @@ docker-compose -f docker-compose.yml up
 
 ### 规则引擎镜像升级（待更新）
 
-## 修改卷里的配置
+## 修改卷里的配置（应用程序会优先使用环境变量，如配置不生效，请qq联系我们）
 1. 找到对应的卷名
 ```
 docker volume ls
@@ -78,5 +79,5 @@ docker volume inspect
 3.
 ## 联系我们
 
-如升级有疑问请加群咨询
+感谢您的使用和支持，如升级有疑问请加群咨询，加qq群请备注需要咨询的问题，我们会在通过的第一时间回复您问题
 QQ群2：371794256

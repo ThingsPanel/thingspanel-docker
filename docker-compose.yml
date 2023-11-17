@@ -17,6 +17,7 @@ services:
         ipv4_address: 172.19.0.3
     volumes:
       - nginx:/etc/nginx
+    restart: unless-stopped
 
   rule-engine:
     image: thingspanel/rule-engine:v0.4.5
@@ -29,6 +30,7 @@ services:
     networks:
       extnetwork:
         ipv4_address: 172.19.0.7
+    restart: unless-stopped
 
   postgres:
     image: timescale/timescaledb:latest-pg12
@@ -52,6 +54,7 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+    restart: unless-stopped
 
   gmqtt:
     image: thingspanel/thingspanel-gmqtt:v0.5.3
@@ -66,6 +69,7 @@ services:
     networks:
       extnetwork:
         ipv4_address: 172.19.0.5
+    restart: unless-stopped
 
   redis:
     image: redis:6.2.7
@@ -81,6 +85,7 @@ services:
     networks:
       extnetwork:
         ipv4_address: 172.19.0.6
+    restart: unless-stopped
 
   backend:
     image: thingspanel/thingspanel-go:v0.5.4.1
@@ -105,12 +110,13 @@ services:
     volumes:
       - go:/go/src/app/files
       - go:/go/src/app/conf
-    restart: on-failure
+    restart: unless-stopped
     ulimits:
       nproc: 524288
       nofile:
         soft: 20000
         hard: 40000
+
   modbus-plugin:
     image: thingspanel/modbus-protocol-plugin:v0.5.3
     ports:
@@ -125,7 +131,7 @@ services:
     depends_on:
       - backend
       - gmqtt
-    restart: on-failure
+    restart: unless-stopped
     ulimits:
       nproc: 524288
       nofile:
