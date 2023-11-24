@@ -15,7 +15,7 @@ thingspanel-go:go
 3. 删除目标容器的卷：
    1. 清理没有使用的卷：docker volume prune
    2. 查验卷有没有被清理：docker volume ls
-   3. 如果没有便删除卷：docker volume delete 卷名（thingspanel-docker_gmqtt，thingspanel-docker_go，thingspanel-docker_nginx）
+   3. 如果没有便删除卷：docker volume rm 卷名（thingspanel-docker_gmqtt，thingspanel-docker_go，thingspanel-docker_nginx）
 4. 执行：docker-compose -f docker-compose.yml up  
    注意如果镜像和升级的目标镜像相同，需要删除服务器上的镜像重新拉取
 ## 全部升级
