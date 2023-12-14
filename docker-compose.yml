@@ -65,6 +65,9 @@ services:
       - "8083:8083"
     environment:
       - "TZ=Asia/Shanghai"
+      - "GMQTT_DB_REDIS_CONN=172.19.0.6:6379"
+      - "GMQTT_DB_PSQL_PSQLADDR=172.19.0.4"
+      - "GMQTT_DB_PSQL_PSQLPORT=5432"
     hostname: gmqtt
     networks:
       extnetwork:
