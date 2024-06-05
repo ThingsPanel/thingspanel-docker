@@ -1,4 +1,7 @@
 # ThingsPanel版本升级（docker部署版本）
+
+## 注意
+0.5.4->1.0.0是无法升级的
 ## 备份
 
 根据情况备份数据（待更新）
@@ -19,30 +22,8 @@ thingspanel-go:go
 4. 执行：docker-compose -f docker-compose.yml up  
    注意如果镜像和升级的目标镜像相同，需要删除服务器上的镜像重新拉取
 ## 全部升级
-### 第一步：数据库升级
 
-#### 增量脚本拷贝
-
-步骤：（也可以将增加sql直接通过数据库工具执行，注意数据库端口被映射为5555了）
-
-1. 查看ThingsPanel-Go仓库TP.sql文件末尾，找到升级版本的增量sql（最好工具比对一下），单独做成文件Ver.sql传到数据库容器中。
-2. 执行下面命令将文件传入数据库容器中。
-
-```bash
-docker cp /home/tp/Ver.sql timescale:latest-pg12:/var/tmp
-```
-
-命令说明：docker cp 宿主机文件/路径 容器名或容器id：容器内路径。
-
-#### 进入容器
-
-docker exec -it ContainerID /bin/bash
-
-#### 执行sql脚本
-
-psql -d ThingsPanel -U postgres -f /var/tmp/Ver.sql
-
-### 第二步：应用升级（前端thingspanel-vue、后端thingspanel-go）
+### 第一步：应用升级（前端thingspanel-vue、后端thingspanel-go）
 
 #### 更新thingspanel-docker源码
 
@@ -62,10 +43,6 @@ docker stop ContainerID
 ```bash
 docker-compose -f docker-compose.yml up
 ```
-
-### gmqtt镜像升级(待更新)
-
-### 规则引擎镜像升级（待更新）
 
 ## 修改卷里的配置（应用程序会优先使用环境变量，如配置不生效，请qq联系我们）
 1. 找到对应的卷名

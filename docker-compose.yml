@@ -1,17 +1,16 @@
 version: "3.9"
 services:
   frontend: # 前端
-    image: thingspanel/thingspanel-vue:v0.5.4.1
+    image: thingspanel/thingspanel-vue:v1.0.0
     ports:
       - "8080:8080"
     expose:
       - 8080
     environment:
-      - "BACKEND_HOST=172.19.0.2:9999" #后端接口代理地址
+      # - "BACKEND_HOST=172.19.0.2:9999" #后端接口代理地址(暂无法使用)
       - "TZ=Asia/Shanghai"
     depends_on: # 隐式地创建了一个依赖关系
       - backend
-      - rule-engine
     networks:
       extnetwork:
         ipv4_address: 172.19.0.3
@@ -19,21 +18,8 @@ services:
       - nginx:/etc/nginx
     restart: unless-stopped
 
-  rule-engine:
-    image: thingspanel/rule-engine:v0.4.5
-    ports:
-      - "1880:1880"
-    environment:
-      - "TZ=Asia/Shanghai"
-    expose:
-      - 1880
-    networks:
-      extnetwork:
-        ipv4_address: 172.19.0.7
-    restart: unless-stopped
-
   postgres:
-    image: timescale/timescaledb:latest-pg12
+    image: timescale/timescaledb:latest-pg14
     privileged: true
     volumes: # 注意！如果在win系统上运行，可能会有权限问题，可更改为卷映射(去掉文件末尾的卷注释，将下方./data/timescaleDB改为卷timescaleDB即可)
       - ./data/timescaleDB:/var/lib/postgresql/data
@@ -44,7 +30,7 @@ services:
       - "LC_ALL=C.UTF-8"
       - "POSTGRES_DB=ThingsPanel"
       - "POSTGRES_USER=postgres"
-      - "POSTGRES_PASSWORD=ThingsPanel2023"
+      - "POSTGRES_PASSWORD=postgresThingsPanel"
       - "POSTGRES_HOST_AUTH_METHOD=trust"
     networks:
       extnetwork:
@@ -57,17 +43,20 @@ services:
     restart: unless-stopped
 
   gmqtt:
-    image: thingspanel/thingspanel-gmqtt:v0.5.3
+    image: thingspanel/thingspanel-gmqtt:v1.0.0
     volumes:
       - gmqtt:/gmqttd
     ports:
       - "1883:1883"
-      - "8083:8083"
-    environment:
+    environment: # cmd/gmqttd/thingspanel.yml配置文件中的配置都可以通过环境变量传递
       - "TZ=Asia/Shanghai"
       - "GMQTT_DB_REDIS_CONN=172.19.0.6:6379"
+      - "GMQTT_DB_REDIS_PASSWORD=redis"
       - "GMQTT_DB_PSQL_PSQLADDR=172.19.0.4"
       - "GMQTT_DB_PSQL_PSQLPORT=5432"
+      - "GMQTT_DB_PSQL_PSQLDB=ThingsPanel"
+      - "GMQTT_DB_PSQL_PSQLUSER=postgres"
+      - "GMQTT_DB_PSQL_PSQLPASSWORD=postgresThingsPanel"
     hostname: gmqtt
     networks:
       extnetwork:
@@ -76,7 +65,7 @@ services:
 
   redis:
     image: redis:6.2.7
-    command: redis-server --requirepass redis2022
+    command: redis-server --requirepass redis
     volumes:
       - ./data/redis/data:/data
       - ./data/redis/conf/redis.conf:/usr/local/etc/redis/redis.conf
@@ -94,15 +83,20 @@ services:
     image: thingspanel/thingspanel-go:v0.5.4.1
     ports: # 如不需要从外部访问可删除端口映射
       - "9999:9999"
-    environment:
+    environment: # configs/conf.yml配置文件中的配置都可以通过环境变量传递
       - "TZ=Asia/Shanghai"
-      - "GOTP_DB_PSQL_PSQLADDR=172.19.0.4"
-      - "GOTP_DB_PSQL_PSQLPORT=5432"
-      - "GOTP_MQTT_BROKER=172.19.0.5:1883"
-      - "GOTP_DB_REDIS_CONN=172.19.0.6:6379"
-      - "GOTP_API_HTTP_HOST=172.19.0.5:8083"
-      - "GOTP_DB_PSQL_DBTYPE=timescaledb"
+      - "GOTP_DB_PSQL_HOST=172.19.0.4"
+      - "GOTP_DB_PSQL_PORT=5432"
+      - "GOTP_DB_PSQL_USERNAME=postgres"
+      - "GOTP_DB_PSQL_PASSWORD=postgresThingsPanel"
+      - "GOTP_DB_PSQL_DBNAME=ThingsPanel"
+      - "GOTP_DB_LOG_LEVEL=3"
+      - "GOTP_DB_REDIS_ADDR=172.19.0.6:6379"
+      - "GOTP_DB_REDIS_PASSWORD=redis"
       - "GOTP_MQTT_SERVER=gmqtt"
+      - "GOTP_MQTT_ACCESS_ADDRESS=域名:1883"
+      - "GOTP_MQTT_BROKER=172.19.0.5:1883"
+      - "GOTP_LOG_LEVEL=error"
     networks:
       extnetwork:
         ipv4_address: 172.19.0.2
@@ -113,27 +107,6 @@ services:
     volumes:
       - go:/go/src/app/files
       - go:/go/src/app/conf
-    restart: unless-stopped
-    ulimits:
-      nproc: 524288
-      nofile:
-        soft: 20000
-        hard: 40000
-
-  modbus-plugin:
-    image: thingspanel/modbus-protocol-plugin:v0.5.3
-    ports:
-      - "502:502"
-      - "503:503"
-    environment:
-      - "TZ=Asia/Shanghai"
-    hostname: modbus-plugin
-    networks:
-      extnetwork:
-        ipv4_address: 172.19.0.8
-    depends_on:
-      - backend
-      - gmqtt
     restart: unless-stopped
     ulimits:
       nproc: 524288
