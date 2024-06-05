@@ -79,8 +79,6 @@ docker logs -f containerID
 1883（mqtt端口）
 5432（postogresql端口）
 6379（redis端口）
-1880（规则引擎端口）
-8083（mqtt用户注册接口）
 ```
 - 登录
 

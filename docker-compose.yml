@@ -90,7 +90,7 @@ services:
       - "GOTP_DB_PSQL_USERNAME=postgres"
       - "GOTP_DB_PSQL_PASSWORD=postgresThingsPanel"
       - "GOTP_DB_PSQL_DBNAME=ThingsPanel"
-      - "GOTP_DB_LOG_LEVEL=3"
+      - "GOTP_DB_PSQL_LOG_LEVEL=3"
       - "GOTP_DB_REDIS_ADDR=172.19.0.6:6379"
       - "GOTP_DB_REDIS_PASSWORD=redis"
       - "GOTP_MQTT_SERVER=gmqtt"
