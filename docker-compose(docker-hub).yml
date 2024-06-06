@@ -1,7 +1,7 @@
 version: "3.9"
 services:
   frontend: # 前端
-    image: registry.cn-hangzhou.aliyuncs.com/thingspanel/thingspanel-vue:v1.0.0
+    image: thingspanel/thingspanel-vue:v1.0.0
     ports:
       - "8080:8080"
     expose:
@@ -43,7 +43,7 @@ services:
     restart: unless-stopped
 
   gmqtt:
-    image: registry.cn-hangzhou.aliyuncs.com/thingspanel/thingspanel-gmqtt:v1.0.0
+    image: thingspanel/thingspanel-gmqtt:v1.0.0
     volumes:
       - gmqtt:/gmqttd
     ports:
@@ -80,7 +80,7 @@ services:
     restart: unless-stopped
 
   backend:
-    image: registry.cn-hangzhou.aliyuncs.com/thingspanel/thingspanel-go:v1.0.0
+    image: thingspanel/thingspanel-go:v1.0.0
     ports: # 如不需要从外部访问可删除端口映射
       - "9999:9999"
     environment: # configs/conf.yml配置文件中的配置都可以通过环境变量传递
