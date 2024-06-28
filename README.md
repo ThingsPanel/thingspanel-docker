@@ -40,13 +40,17 @@
     ```
 ## 安装ThingsPanel
 - **使用拉取项目**
-
+    Github地址：
     ```bash
     # 拉取docker配置
     git clone https://github.com/ThingsPanel/thingspanel-docker.git
     cd thingspanel-docker
     ```
-
+    Gitee地址：
+    ```bash
+    git clone https://gitee.com/ThingsPanel/thingspanel-docker.git
+    cd thingspanel-docker
+    ```
 - **运行项目**
 
     > 在`thingsPanel-go-docker`目录下(win需要打开`cmd` 窗口)
