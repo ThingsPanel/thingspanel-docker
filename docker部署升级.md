@@ -45,6 +45,7 @@ docker-compose -f docker-compose.yml up
 ```
 
 ## 修改卷里的配置（应用程序会优先使用环境变量，如配置不生效，请qq联系我们）
+
 1. 找到对应的卷名
 ```
 docker volume ls

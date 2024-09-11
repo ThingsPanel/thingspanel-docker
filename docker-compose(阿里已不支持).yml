@@ -1,7 +1,7 @@
 version: "3.9"
 services:
   frontend: # 前端
-    image: thingspanel/thingspanel-vue:v1.0.0
+    image: registry.cn-hangzhou.aliyuncs.com/thingspanel/thingspanel-vue:v1.1.0
     ports:
       - "8080:8080"
     expose:
@@ -19,7 +19,7 @@ services:
     restart: unless-stopped
 
   postgres:
-    image: timescale/timescaledb:latest-pg14
+    image: registry.cn-hangzhou.aliyuncs.com/thingspanel/timescaledb:14
     privileged: true
     volumes: # 注意！如果在win系统上运行，可能会有权限问题，可更改为卷映射(去掉文件末尾的卷注释，将下方./data/timescaleDB改为卷timescaleDB即可)
       - ./data/timescaleDB:/var/lib/postgresql/data
@@ -43,7 +43,7 @@ services:
     restart: unless-stopped
 
   gmqtt:
-    image: thingspanel/thingspanel-gmqtt:v1.0.0
+    image: registry.cn-hangzhou.aliyuncs.com/thingspanel/thingspanel-gmqtt:v1.1.0
     volumes:
       - gmqtt:/gmqttd
     ports:
@@ -64,7 +64,7 @@ services:
     restart: unless-stopped
 
   redis:
-    image: redis:6.2.7
+    image: registry.cn-hangzhou.aliyuncs.com/thingspanel/redis:6.2.7
     command: redis-server --requirepass redis
     volumes:
       - ./data/redis/data:/data
@@ -80,7 +80,7 @@ services:
     restart: unless-stopped
 
   backend:
-    image: thingspanel/thingspanel-go:v1.0.0
+    image: registry.cn-hangzhou.aliyuncs.com/thingspanel/thingspanel-go:v1.1.0
     ports: # 如不需要从外部访问可删除端口映射
       - "9999:9999"
     environment: # configs/conf.yml配置文件中的配置都可以通过环境变量传递
