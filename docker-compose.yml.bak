@@ -1,14 +1,15 @@
 version: "3.9"
-
 services:
-  frontend:
+  frontend: # 前端
     image: thingspanel/thingspanel-vue:v1.1.1
     ports:
       - "8080:8080"
+    expose:
+      - 8080
     environment:
+      # - "BACKEND_HOST=172.50.0.2:9999" #后端接口代理地址(暂无法使用)
       - "TZ=Asia/Shanghai"
-      - "BACKEND_HOST=http://172.50.0.2:9999" # 后端接口代理地址
-    depends_on:
+    depends_on: # 隐式地创建了一个依赖关系
       - backend
     networks:
       extnetwork:
@@ -16,17 +17,13 @@ services:
     volumes:
       - nginx:/etc/nginx
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
 
   postgres:
-    image: timescale/timescaledb:2.8.1-pg14
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    ports:
+    image: timescale/timescaledb:latest-pg14
+    privileged: true
+    volumes: # 注意！如果在win系统上运行，可能会有权限问题，可更改为卷映射(去掉文件末尾的卷注释，将下方./data/timescaleDB改为卷timescaleDB即可)
+      - ./data/timescaleDB:/var/lib/postgresql/data
+    ports: # 如不需要从外部访问可删除端口映射
       - "5555:5432"
     environment:
       - "TZ=Asia/Shanghai"
@@ -51,7 +48,7 @@ services:
       - gmqtt:/gmqttd
     ports:
       - "1883:1883"
-    environment:
+    environment: # cmd/gmqttd/thingspanel.yml配置文件中的配置都可以通过环境变量传递
       - "TZ=Asia/Shanghai"
       - "GMQTT_DB_REDIS_CONN=172.50.0.6:6379"
       - "GMQTT_DB_REDIS_PASSWORD=redis"
@@ -65,18 +62,15 @@ services:
       extnetwork:
         ipv4_address: 172.50.0.5
     restart: unless-stopped
-    depends_on:
-      - redis
-      - postgres
 
   redis:
     image: redis:6.2.7
     command: redis-server --requirepass redis
     volumes:
-      - redis_data:/data
+      - ./data/redis/data:/data
       - ./data/redis/conf/redis.conf:/usr/local/etc/redis/redis.conf
       - ./data/redis/logs:/logs
-    ports:
+    ports: # 如不需要从外部访问可删除端口映射
       - "6379:6379"
     environment:
       - "TZ=Asia/Shanghai"
@@ -84,17 +78,12 @@ services:
       extnetwork:
         ipv4_address: 172.50.0.6
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
 
   backend:
     image: thingspanel/thingspanel-go:v1.1.2
-    ports:
+    ports: # 如不需要从外部访问可删除端口映射
       - "9999:9999"
-    environment:
+    environment: # configs/conf.yml配置文件中的配置都可以通过环境变量传递
       - "TZ=Asia/Shanghai"
       - "GOTP_DB_PSQL_HOST=172.50.0.4"
       - "GOTP_DB_PSQL_PORT=5432"
@@ -105,7 +94,7 @@ services:
       - "GOTP_DB_REDIS_ADDR=172.50.0.6:6379"
       - "GOTP_DB_REDIS_PASSWORD=redis"
       - "GOTP_MQTT_SERVER=gmqtt"
-      - "GOTP_MQTT_ACCESS_ADDRESS=172.50.0.5:1883"
+      - "GOTP_MQTT_ACCESS_ADDRESS=域名:1883"
       - "GOTP_MQTT_BROKER=172.50.0.5:1883"
       - "GOTP_LOG_LEVEL=error"
     networks:
@@ -116,30 +105,25 @@ services:
       - postgres
       - redis
     volumes:
-      - go_files:/go/src/app/files
-      - go_configs:/go/src/app/configs
+      - go:/go/src/app/files
+      - go:/go/src/app/configs
     restart: unless-stopped
     ulimits:
       nproc: 524288
       nofile:
         soft: 20000
         hard: 40000
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9999/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
 volumes:
-  go_files:
-  go_configs:
+  go:
   gmqtt:
   nginx:
-  postgres_data:
-  redis_data:
+  # timescaleDB:
 
 networks:
   extnetwork:
     ipam:
       config:
         - subnet: 172.50.0.0/16
+
+
+
