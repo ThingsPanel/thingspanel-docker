@@ -104,7 +104,7 @@ docker logs -f containerID
     ```
 
 - 各种协议类型设备的接入
-    http://thingspanel.io/docs/equipment-access/mqtt
+    <http://thingspanel.io/docs/equipment-access/mqtt>
 
 ## 联系我们
 
