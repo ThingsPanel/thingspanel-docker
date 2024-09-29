@@ -7,20 +7,16 @@ services:
       - "8080:8080"
     environment:
       - "TZ=Asia/Shanghai"
-      - "BACKEND_HOST=http://172.50.0.2:9999" # 后端接口代理地址
+      - "BACKEND_HOST=http://backend:9999" # 使用服务名而不是 IP
     depends_on:
-      - backend
+      backend:
+        condition: service_started
     networks:
       extnetwork:
         ipv4_address: 172.50.0.3
     volumes:
       - nginx:/etc/nginx
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
 
   postgres:
     image: timescale/timescaledb:2.8.1-pg14
@@ -39,7 +35,7 @@ services:
       extnetwork:
         ipv4_address: 172.50.0.4
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres && psql -U postgres -d ThingsPanel -c 'SELECT 1' || exit 1"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d ThingsPanel"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -54,9 +50,9 @@ services:
       - "1883:1883"
     environment:
       - "TZ=Asia/Shanghai"
-      - "GMQTT_DB_REDIS_CONN=172.50.0.6:6379"
+      - "GMQTT_DB_REDIS_CONN=redis:6379"
       - "GMQTT_DB_REDIS_PASSWORD=redis"
-      - "GMQTT_DB_PSQL_PSQLADDR=172.50.0.4"
+      - "GMQTT_DB_PSQL_PSQLADDR=postgres"
       - "GMQTT_DB_PSQL_PSQLPORT=5432"
       - "GMQTT_DB_PSQL_PSQLDB=ThingsPanel"
       - "GMQTT_DB_PSQL_PSQLUSER=postgres"
@@ -65,18 +61,18 @@ services:
     networks:
       extnetwork:
         ipv4_address: 172.50.0.5
-    restart: unless-stopped
     depends_on:
-      - redis
-      - postgres
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
 
   redis:
     image: redis:6.2.7
     command: redis-server --requirepass redis
     volumes:
       - redis_data:/data
-      - ./data/redis/conf/redis.conf:/usr/local/etc/redis/redis.conf
-      - ./data/redis/logs:/logs
     ports:
       - "6379:6379"
     environment:
@@ -84,12 +80,12 @@ services:
     networks:
       extnetwork:
         ipv4_address: 172.50.0.6
-    restart: unless-stopped
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
 
   backend:
     image: thingspanel/thingspanel-go:v1.1.2
@@ -97,39 +93,32 @@ services:
       - "9999:9999"
     environment:
       - "TZ=Asia/Shanghai"
-      - "GOTP_DB_PSQL_HOST=172.50.0.4"
+      - "GOTP_DB_PSQL_HOST=postgres"
       - "GOTP_DB_PSQL_PORT=5432"
       - "GOTP_DB_PSQL_USERNAME=postgres"
       - "GOTP_DB_PSQL_PASSWORD=postgresThingsPanel"
       - "GOTP_DB_PSQL_DBNAME=ThingsPanel"
       - "GOTP_DB_PSQL_LOG_LEVEL=3"
-      - "GOTP_DB_REDIS_ADDR=172.50.0.6:6379"
+      - "GOTP_DB_REDIS_ADDR=redis:6379"
       - "GOTP_DB_REDIS_PASSWORD=redis"
       - "GOTP_MQTT_SERVER=gmqtt"
-      - "GOTP_MQTT_ACCESS_ADDRESS=172.50.0.5:1883"
-      - "GOTP_MQTT_BROKER=172.50.0.5:1883"
+      - "GOTP_MQTT_ACCESS_ADDRESS=gmqtt:1883"
+      - "GOTP_MQTT_BROKER=gmqtt:1883"
       - "GOTP_LOG_LEVEL=error"
     networks:
       extnetwork:
         ipv4_address: 172.50.0.2
     depends_on:
-      - gmqtt
-      - postgres
-      - redis
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      gmqtt:
+        condition: service_started
     volumes:
       - go_files:/go/src/app/files
       - go_configs:/go/src/app/configs
     restart: unless-stopped
-    ulimits:
-      nproc: 524288
-      nofile:
-        soft: 20000
-        hard: 40000
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9999/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
 
 volumes:
   go_files:
