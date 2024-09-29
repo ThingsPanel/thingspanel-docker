@@ -1,8 +1,6 @@
 #!/bin/bash
 
-set -e
-
-echo "开始 Docker Compose 清理过程..."
+echo "开始 Docker Compose 项目清理过程..."
 
 # 检查 docker-compose.yml 文件是否存在
 if [ ! -f "docker-compose.yml" ]; then
@@ -10,36 +8,35 @@ if [ ! -f "docker-compose.yml" ]; then
     exit 1
 fi
 
-# 创建一个临时的 docker-compose 文件，移除所有 healthcheck 配置
-echo "正在创建临时 docker-compose 文件（忽略 healthcheck 配置）..."
-sed '/healthcheck:/,/^[^ ]/d' docker-compose.yml > docker-compose-temp.yml
+# 函数：执行命令并继续，即使命令失败
+run_command() {
+    echo "执行: $1"
+    $1 || echo "警告: 命令 '$1' 失败，但继续执行脚本。"
+}
 
-# 使用临时文件进行清理操作
-echo "正在停止并删除所有容器、网络和镜像..."
-docker-compose -f docker-compose-temp.yml down --rmi all
+# 尝试停止所有项目相关的容器
+run_command "docker-compose stop"
 
-echo "正在删除所有卷（警告：这将删除所有持久化数据）..."
-docker-compose -f docker-compose-temp.yml down -v
+# 尝试删除项目相关的容器
+run_command "docker-compose rm -f"
 
-# 删除临时文件
-rm docker-compose-temp.yml
+# 尝试删除项目相关的卷
+run_command "docker-compose down -v"
 
-# 清理未使用的 Docker 资源
-echo "正在清理未使用的 Docker 资源..."
-docker system prune -f
+# 尝试删除项目相关的网络
+run_command "docker-compose down --remove-orphans"
 
-# 删除所有未使用的卷
-echo "正在删除所有未使用的卷..."
-docker volume prune -f
+# 尝试删除项目使用的镜像
+run_command "docker-compose down --rmi all"
 
-# 检查是否还有遗留的资源
-echo "正在检查是否还有遗留的资源..."
-echo "容器："
-docker ps -a
-echo "镜像："
-docker images
-echo "卷："
-docker volume ls
+echo "正在检查是否还有遗留的项目资源..."
+echo "项目容器："
+docker-compose ps
+echo "项目卷："
+docker volume ls --filter name=$(basename $(pwd))
+echo "项目网络："
+docker network ls --filter name=$(basename $(pwd))
 
-echo "清理完成。如有必要，请手动删除任何剩余的资源。"
-echo "注意：本次清理忽略了 docker-compose.yml 中的 healthcheck 配置。"
+echo "清理完成。如有剩余资源，可能需要手动删除。"
+echo "注意：如果清理过程中出现错误，可能是由于 docker-compose.yml 文件中的配置问题。"
+echo "请检查并修复 docker-compose.yml 文件中的任何配置错误。"
