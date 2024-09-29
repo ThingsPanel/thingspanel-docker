@@ -7,16 +7,15 @@ services:
       - "8080:8080"
     environment:
       - "TZ=Asia/Shanghai"
-      - "BACKEND_HOST=http://backend:9999" # 使用服务名而不是 IP
+      - "BACKEND_HOST=http://backend:9999"
     depends_on:
       backend:
         condition: service_started
-    networks:
-      extnetwork:
-        ipv4_address: 172.50.0.3
     volumes:
       - nginx:/etc/nginx
     restart: unless-stopped
+    networks:
+      - thingspanel_network
 
   postgres:
     image: timescale/timescaledb:2.8.1-pg14
@@ -31,9 +30,6 @@ services:
       - "POSTGRES_USER=postgres"
       - "POSTGRES_PASSWORD=postgresThingsPanel"
       - "POSTGRES_HOST_AUTH_METHOD=md5"
-    networks:
-      extnetwork:
-        ipv4_address: 172.50.0.4
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d ThingsPanel"]
       interval: 10s
@@ -41,6 +37,8 @@ services:
       retries: 5
       start_period: 40s
     restart: unless-stopped
+    networks:
+      - thingspanel_network
 
   gmqtt:
     image: thingspanel/thingspanel-gmqtt:v1.0.0
@@ -58,15 +56,14 @@ services:
       - "GMQTT_DB_PSQL_PSQLUSER=postgres"
       - "GMQTT_DB_PSQL_PSQLPASSWORD=postgresThingsPanel"
     hostname: gmqtt
-    networks:
-      extnetwork:
-        ipv4_address: 172.50.0.5
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
     restart: unless-stopped
+    networks:
+      - thingspanel_network
 
   redis:
     image: redis:6.2.7
@@ -77,15 +74,14 @@ services:
       - "6379:6379"
     environment:
       - "TZ=Asia/Shanghai"
-    networks:
-      extnetwork:
-        ipv4_address: 172.50.0.6
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5
     restart: unless-stopped
+    networks:
+      - thingspanel_network
 
   backend:
     image: thingspanel/thingspanel-go:v1.1.2
@@ -105,9 +101,6 @@ services:
       - "GOTP_MQTT_ACCESS_ADDRESS=gmqtt:1883"
       - "GOTP_MQTT_BROKER=gmqtt:1883"
       - "GOTP_LOG_LEVEL=error"
-    networks:
-      extnetwork:
-        ipv4_address: 172.50.0.2
     depends_on:
       postgres:
         condition: service_healthy
@@ -119,6 +112,8 @@ services:
       - go_files:/go/src/app/files
       - go_configs:/go/src/app/configs
     restart: unless-stopped
+    networks:
+      - thingspanel_network
 
 volumes:
   go_files:
@@ -129,7 +124,5 @@ volumes:
   redis_data:
 
 networks:
-  extnetwork:
-    ipam:
-      config:
-        - subnet: 172.50.0.0/16
+  thingspanel_network:
+    driver: bridge
