@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   frontend:
-    image: ghcr.io/thingspanel/thingspanel-vue:v1.1.2
+    image: thingspanel/thingspanel-vue:v1.1.2
     ports:
       - "8080:8080"
     environment:
@@ -41,7 +41,7 @@ services:
       - thingspanel_network
 
   gmqtt:
-    image: ghcr.io/thingspanel/thingspanel-gmqtt:v1.1.1
+    image: thingspanel/thingspanel-gmqtt:v1.1.1
     volumes:
       - gmqtt:/gmqttd
     ports:
@@ -84,7 +84,7 @@ services:
       - thingspanel_network
 
   backend:
-    image: ghcr.io/thingspanel/thingspanel-go:v1.1.2
+    image: thingspanel/thingspanel-go:v1.1.2
     ports:
       - "9999:9999"
     environment:
