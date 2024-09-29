@@ -1,18 +1,23 @@
 # ThingsPanel版本升级（docker部署版本）
 
 ## 注意
+
 0.5.4->1.0.0是无法升级的
+
 ## 备份
 
 根据情况备份数据（待更新）
 
 ## 部分容器升级（前端、后端、mqtt服务）
+
 容器对应的卷名
-```
+
+```bash
 thingspanel-vue:nginx
 thingspanel-gmqtt:gmqtt
 thingspanel-go:go
 ```
+
 1. thingspanel-docker目录下更新thingspanel-docker源码:git pull
 2. 停止目标容器:docker stop ContainerID，删除目标容器:docker rm ContainerID，删除目标镜像:docker rmi ImageID
 3. 删除目标容器的卷：
@@ -20,7 +25,9 @@ thingspanel-go:go
    2. 查验卷有没有被清理：docker volume ls
    3. 如果没有便删除卷：docker volume rm 卷名（thingspanel-docker_gmqtt，thingspanel-docker_go，thingspanel-docker_nginx）
 4. 执行：docker-compose -f docker-compose.yml up  
-   注意如果镜像和升级的目标镜像相同，需要删除服务器上的镜像重新拉取
+
+>注意如果镜像和升级的目标镜像相同，需要删除服务器上的镜像重新拉取
+
 ## 全部升级
 
 ### 第一步：应用升级（前端thingspanel-vue、后端thingspanel-go）
@@ -46,15 +53,18 @@ docker-compose -f docker-compose.yml up
 
 ## 修改卷里的配置（应用程序会优先使用环境变量，如配置不生效，请qq联系我们）
 
-1. 找到对应的卷名
-```
+- 找到对应的卷名
+
+```bash
 docker volume ls
 ```
-2. 查看卷在宿主机的路径,
-```
+
+- 查看卷在宿主机的路径
+
+```bash
 docker volume inspect
 ```
-3.
+
 ## 联系我们
 
 感谢您的使用和支持，如升级有疑问请加群咨询，加qq群请备注需要咨询的问题，我们会在通过的第一时间回复您问题

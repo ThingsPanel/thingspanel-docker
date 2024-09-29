@@ -1,0 +1,15 @@
+# 全部重装
+
+注意：该方式会清理之前部署的所有数据，谨慎操作！！！
+
+- 给脚本执行权限：
+  
+  ```bash
+  chmod +x docker_compose_cleanup.sh
+  ```
+
+- 执行脚本：
+
+  ```bash
+  ./docker_compose_cleanup.sh
+  ```
