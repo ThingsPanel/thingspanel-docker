@@ -22,6 +22,8 @@
     systemctl enable docker.service
     ```
 
+    > 提示：如果没有dnf命令可执行yum install dnf安装，再执行dnf install dnf-plugins-core扩展
+
 - **安装docker-compose**
 
     ```bash
