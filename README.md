@@ -1,11 +1,15 @@
 # 本地快速启动项目
+## Windows exe执行包下载直接运行
 
-## windows环境准备
+进入QQ群371794256，在群文件中下载ThingsPanel的exe可执行版本。
 
-- **windows电脑安装 [Docker Desktop](https://www.docker.com/products/docker-desktop)**
+## Docker安装
+### Windows环境准备
+
+- **Windows电脑安装 [Docker Desktop](https://www.docker.com/products/docker-desktop)**
 - **git**
 
-## linux环境准备
+### linux环境准备
 
 - 需要先安装好Docker（[安装docker社区版](https://docs.docker.com/engine/installation/)）
 - DockerCompose（[安装Docker Compose](https://docs.docker.com/compose/install/)）
@@ -44,7 +48,7 @@
     dnf install git -y
     ```
 
-## 安装ThingsPanel
+### 安装ThingsPanel
 
 - **使用拉取项目**
   
@@ -77,16 +81,16 @@
     docker-compose -f docker-compose.yml down
     ```
 
-## 挂载说明
+### 挂载说明
 
 - docker volume ls可查看数据卷
 
-## 查看容器运行日志
+### 查看容器运行日志
 
 ```bash showLineNumbers
 docker logs -f containerID
 
-## 注意事项
+### 注意事项
 
 端口：
 
