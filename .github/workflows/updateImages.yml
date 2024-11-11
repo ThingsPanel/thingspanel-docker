@@ -32,8 +32,9 @@ jobs:
               echo "No new tags in $repo"
             fi
           done
-
           echo "new_tags=$new_tags" >> $GITHUB_ENV
+        env:
+          GH_TOKEN: ${{ github.token }}
 
       #执行镜像工作流
       #- name: Trigger image build for new tags
