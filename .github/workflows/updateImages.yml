@@ -22,9 +22,9 @@ jobs:
 
           for repo in "${!repositories[@]}"; do
             echo "Checking tags for $repo"
-            tags=$(gh api repos/$repo/tags --jq '.[].name' --silent)
+            tags=$(gh api repos/$repo/tags --jq '.[].name')
             latest_tag=$(echo "$tags" | sort -V | tail -n 1)
-           
+            echo $tags
             if [ "$latest_tag" != "" ]; then
               echo "New tag found in $repo: $latest_tag"
               new_tags="$new_tags ${repositories[$repo]}:$latest_tag"
@@ -78,6 +78,6 @@ jobs:
             if [[ $existing_tags == *"$tag"* ]]; then
                 echo "The image $tag already exists,skipping the copy."
             else
-                skopeo copy "docker://ghcr.io/thingspanel/$tag" "docker://registry.jihulab.com/thingspanel/docker-images/$tag"
+                #skopeo copy "docker://ghcr.io/thingspanel/$tag" "docker://registry.jihulab.com/thingspanel/docker-images/$tag"
             fi
           done
