@@ -24,7 +24,6 @@ jobs:
             echo "Checking tags for $repo"
             tags=$(gh api repos/$repo/tags --jq '.[].name')
             latest_tag=$(echo "$tags" | sort -V | tail -n 1)
-            echo $tags
             if [ "$latest_tag" != "" ]; then
               echo "New tag found in $repo: $latest_tag"
               new_tags="$new_tags ${repositories[$repo]}:$latest_tag"
@@ -74,9 +73,7 @@ jobs:
         run: |
           IFS=' ' read -r -a tags_array <<< "$new_tags"
           for tag in "${tags_array[@]}"; do
-            #repo=${tag%:*}
             image="docker://registry.jihulab.com/thingspanel/docker-images/$tag"
-            echo $image
             if skopeo inspect "$image" > /dev/null 2>&1; then
                 echo "The image $tag already exists,skipping the copy."
             else
