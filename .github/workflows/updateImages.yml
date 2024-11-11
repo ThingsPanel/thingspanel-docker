@@ -77,7 +77,7 @@ jobs:
             #repo=${tag%:*}
             image="docker://registry.jihulab.com/thingspanel/docker-images/$tag"
             echo $image
-            if skopeo inspect "image" > /dev/null 2>&1; then
+            if skopeo inspect "$image" > /dev/null 2>&1; then
                 echo "The image $tag already exists,skipping the copy."
             else
                 echo $tag
