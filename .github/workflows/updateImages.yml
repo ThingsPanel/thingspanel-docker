@@ -13,25 +13,21 @@ jobs:
       - name: Check for new tags in repositories
         id: check_tags
         run: |
-          repositories=("user/repo1" "user/repo2" "user/repo3")  # 替换为你的目标仓库
+          declare -A repositories
+          repositories=(
+                ["ThingsPanel/thingspanel-backend-community"]="thingspanel-go"
+                ["ThingsPanel/thingspanel-frontend-community"]="thingspanel-vue"
+          )          
           new_tags=""
 
-          for repo in "${repositories[@]}"; do
+          for repo in "${!repositories[@]}"; do
             echo "Checking tags for $repo"
             tags=$(gh api repos/$repo/tags --jq '.[].name' --silent)
             latest_tag=$(echo "$tags" | sort -V | tail -n 1)
-
-            # 通过文件或环境变量记录上次检查的标签（需要自行维护状态）
-            if [ -f "$repo.latest" ]; then
-              last_tag=$(cat "$repo.latest")
-            else
-              last_tag=""
-            fi
-
-            if [ "$latest_tag" != "$last_tag" ]; then
+           
+            if [ "$latest_tag" != "" ]; then
               echo "New tag found in $repo: $latest_tag"
-              new_tags="$new_tags $repo:$latest_tag"
-              echo "$latest_tag" > "$repo.latest"  # 更新最新标签
+              new_tags="$new_tags ${repositories[$repo]}:$latest_tag"
             else
               echo "No new tags in $repo"
             fi
@@ -39,23 +35,48 @@ jobs:
 
           echo "new_tags=$new_tags" >> $GITHUB_ENV
 
-      - name: Trigger image build for new tags
-        if: env.new_tags != ''  # 仅在找到新标签时执行
+      #执行镜像工作流
+      #- name: Trigger image build for new tags
+      #  if: env.new_tags != ''  # 仅在找到新标签时执行
+      #  run: |
+      #    IFS=' ' read -r -a tags_array <<< "$new_tags"
+      #    for tag in "${tags_array[@]}"; do
+      #      repo=${tag%:*}
+      #      tag_name=${tag#*:}
+
+      #      echo "Triggering image build for $repo with tag $tag_name"
+      #      curl -X POST \
+      #        -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+      #        -H "Accept: application/vnd.github.v3+json" \
+      #        "https://api.github.com/repos/$repo/actions/workflows/build.yml/dispatches" \
+      #        -d "{\"ref\":\"$tag_name\"}"  # 假设工作流使用标签名作为 ref
+      #    done
+      
+      #检查仓库镜像
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1 
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Login to Jihulab Docker Hub
+        uses: docker/login-action@v2.2.0
+        with:
+          registry: registry.jihulab.com
+          username: ${{ secrets.JH_USER }}
+          password: ${{ secrets.JH_PASS }}
+          logout: false
+
+      - name: Use Skopeo Tools Sync Image to Jihulab Docker Hub2
+        if: env.new_tags != ''
         run: |
           IFS=' ' read -r -a tags_array <<< "$new_tags"
           for tag in "${tags_array[@]}"; do
-            repo=${tag%:*}
-            tag_name=${tag#*:}
-
-            echo "Triggering image build for $repo with tag $tag_name"
-            curl -X POST \
-              -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-              -H "Accept: application/vnd.github.v3+json" \
-              "https://api.github.com/repos/$repo/actions/workflows/build.yml/dispatches" \
-              -d "{\"ref\":\"$tag_name\"}"  # 假设工作流使用标签名作为 ref
+            existing_tags=$(skopeo list-tags docker://registry.jihulab.com/thingspanel/docker-images)
+            if [[ $existing_tags == *"$tag"* ]]; then
+                echo "The image $tag already exists,skipping the copy."
+            else
+                skopeo copy "docker://ghcr.io/thingspanel/$tag" "docker://registry.jihulab.com/thingspanel/docker-images/$tag"
+            fi
           done
-
-      - name: Sync Docker images to Jihulab
-        run: |
-          # 在这里添加同步镜像到 Jihulab 的逻辑
-          # 这部分逻辑可以参考之前的示例，适应于每个 repo 的镜像构建
