@@ -74,7 +74,7 @@ jobs:
         run: |
           IFS=' ' read -r -a tags_array <<< "$new_tags"
           for tag in "${tags_array[@]}"; do
-            existing_tags=$(skopeo list-tags docker://registry.jihulab.com/thingspanel/docker-images)
+            existing_tags=$(skopeo list-tags docker://registry.jihulab.com/thingspanel/docker-images/$tag)
             if [[ $existing_tags == *"$tag"* ]]; then
                 echo "The image $tag already exists,skipping the copy."
             else
