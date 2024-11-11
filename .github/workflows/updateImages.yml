@@ -78,6 +78,7 @@ jobs:
             if [[ $existing_tags == *"$tag"* ]]; then
                 echo "The image $tag already exists,skipping the copy."
             else
+                echo $tag
                 #skopeo copy "docker://ghcr.io/thingspanel/$tag" "docker://registry.jihulab.com/thingspanel/docker-images/$tag"
             fi
           done
