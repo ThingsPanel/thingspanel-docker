@@ -2,7 +2,7 @@ name: Check Tags and Sync Docker Images
 
 on:
   schedule:
-    - cron: '0 */24 * * *'  # 每小时检查一次（可根据需要修改）
+    - cron: '0 1 * * *'  # 每小时检查一次（可根据需要修改）
   workflow_dispatch:  # 允许手动触发
 
 jobs:
