@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   frontend:
-    image: gregistry.jihulab.com/thingspanel/docker-images/thingspanel-vue:v1.1.4
+    image: registry.jihulab.com/thingspanel/docker-images/thingspanel-vue:v1.1.4
     ports:
       - "8080:8080"
     environment:
