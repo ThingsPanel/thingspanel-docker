@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   frontend:
-    image: ghcr.io/thingspanel/thingspanel-vue:v1.1.3
+    image: gregistry.jihulab.com/thingspanel/docker-images/thingspanel-vue:v1.1.4
     ports:
       - "8080:8080"
     environment:
@@ -18,7 +18,7 @@ services:
       - thingspanel_network
 
   postgres:
-    image: ghcr.io/thingspanel/timescaledb:2.8.1-pg14
+    image: registry.jihulab.com/thingspanel/docker-images/timescaledb:14
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -41,7 +41,7 @@ services:
       - thingspanel_network
 
   gmqtt:
-    image: ghcr.io/thingspanel/thingspanel-gmqtt:v1.1.1
+    image: registry.jihulab.com/thingspanel/docker-images/thingspanel-gmqtt:v1.1.1
     volumes:
       - gmqtt:/gmqttd
     ports:
@@ -66,7 +66,7 @@ services:
       - thingspanel_network
 
   redis:
-    image: ghcr.io/thingspanel/redis:6.2.7
+    image: registry.jihulab.com/thingspanel/docker-images/redis:6.2.7
     command: redis-server --requirepass redis
     volumes:
       - redis_data:/data
@@ -84,7 +84,7 @@ services:
       - thingspanel_network
 
   backend:
-    image: ghcr.io/thingspanel/thingspanel-go:v1.1.3
+    image: registry.jihulab.com/thingspanel/docker-images/thingspanel-go:v1.1.4
     ports:
       - "9999:9999"
     environment:
@@ -115,6 +115,23 @@ services:
     networks:
       - thingspanel_network
 
+  modbus_service:
+    image: registry.jihulab.com/thingspanel/docker-images/modbus-protocol-plugin:v1.0.1
+    ports:
+      - "502:502"
+      - "503:503"
+    environment:
+      - "MODBUS_THINGSPANEL_ADDRESS=http://backend:9999"
+      - "MODBUS_MQTT_BROKER=gmqtt:1883"
+      - "MODBUS_MQTT_QOS=0"
+    networks:
+      thingspanel_network:
+        ipv4_address: 172.20.0.10  # 指定固定IP地址
+    depends_on:
+      - backend
+      - gmqtt
+    restart: unless-stopped
+
 volumes:
   go_files:
   go_configs:
@@ -126,3 +143,8 @@ volumes:
 networks:
   thingspanel_network:
     driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.20.0.0/16  # 定义网络的子网范围
+          gateway: 172.20.0.1    # 定义网关地址

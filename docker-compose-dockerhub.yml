@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   frontend:
-    image: thingspanel/thingspanel-vue:v1.1.3
+    image: thingspanel/thingspanel-vue:v1.1.4
     ports:
       - "8080:8080"
     environment:
@@ -84,7 +84,7 @@ services:
       - thingspanel_network
 
   backend:
-    image: thingspanel/thingspanel-go:v1.1.3
+    image: thingspanel/thingspanel-go:v1.1.4
     ports:
       - "9999:9999"
     environment:
