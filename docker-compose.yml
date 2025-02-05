@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   frontend:
-    image: registry.jihulab.com/thingspanel/docker-images/thingspanel-vue:v1.1.4
+    image: registry.cn-hangzhou.aliyuncs.com/thingspanel/thingspanel-vue:v1.1.4
     ports:
       - "8080:8080"
     environment:
@@ -18,7 +18,7 @@ services:
       - thingspanel_network
 
   postgres:
-    image: registry.jihulab.com/thingspanel/docker-images/timescaledb:14
+    image: registry.cn-hangzhou.aliyuncs.com/thingspanel/timescaledb:14
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -41,7 +41,7 @@ services:
       - thingspanel_network
 
   gmqtt:
-    image: registry.jihulab.com/thingspanel/docker-images/thingspanel-gmqtt:v1.1.1
+    image: registry.cn-hangzhou.aliyuncs.com/thingspanel/thingspanel-gmqtt:v1.1.1
     volumes:
       - gmqtt:/gmqttd
     ports:
@@ -66,7 +66,7 @@ services:
       - thingspanel_network
 
   redis:
-    image: registry.jihulab.com/thingspanel/docker-images/redis:6.2.7
+    image: registry.cn-hangzhou.aliyuncs.com/thingspanel/redis:6.2.7
     command: redis-server --requirepass redis
     volumes:
       - redis_data:/data
@@ -84,7 +84,7 @@ services:
       - thingspanel_network
 
   backend:
-    image: registry.jihulab.com/thingspanel/docker-images/thingspanel-go:v1.1.4
+    image: registry.cn-hangzhou.aliyuncs.com/thingspanel/thingspanel-go:v1.1.4
     ports:
       - "9999:9999"
     environment:
@@ -116,7 +116,7 @@ services:
       - thingspanel_network
 
   modbus_service:
-    image: registry.jihulab.com/thingspanel/docker-images/modbus-protocol-plugin:v1.0.1
+    image: registry.cn-hangzhou.aliyuncs.com/thingspanel/modbus-protocol-plugin:v1.0.1
     ports:
       - "502:502"
       - "503:503"
