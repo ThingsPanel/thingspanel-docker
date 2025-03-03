@@ -1,9 +1,15 @@
 # 本地快速启动项目
+
+## 当前版本
+
+- ThingsPanel v1.1.5
+
 ## Windows exe执行包下载直接运行
 
 进入QQ群371794256，在群文件中下载ThingsPanel的exe可执行版本。
 
 ## Docker安装
+
 ### Windows环境准备
 
 - **Windows电脑安装 [Docker Desktop](https://www.docker.com/products/docker-desktop)**
