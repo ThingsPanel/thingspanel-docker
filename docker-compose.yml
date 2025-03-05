@@ -54,7 +54,7 @@ services:
       - "GMQTT_DB_PSQL_PSQLPORT=5432"
       - "GMQTT_DB_PSQL_PSQLDB=ThingsPanel"
       - "GMQTT_DB_PSQL_PSQLUSER=postgres"
-      - "GMQTT_DB_PSQL_PSQLPASSWORD=postgresThingsPanel"
+      - "GMQTT_DB_PSQL_PSQLPASS=postgresThingsPanel"
     hostname: gmqtt
     depends_on:
       postgres:
