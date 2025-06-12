@@ -2,7 +2,7 @@
 
 ## 当前版本
 
-- ThingsPanel v1.1.7
+- ThingsPanel v1.1.8
 
 ## Windows exe执行包下载直接运行
 
